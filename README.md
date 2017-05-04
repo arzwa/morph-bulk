@@ -1,4 +1,4 @@
-# MORPH BULK RUN COMMAND LINE INTERFACE
+# MORPH bulk run command line interface
 Arthur Zwaenepoel 2016 - 2017
 (arzwa@psb.vib-ugent.be)
 
