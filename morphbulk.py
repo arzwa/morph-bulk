@@ -324,10 +324,10 @@ def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candida
               help='Tab separated file with gene set descriptions (e.g. MapMan pathways) (default=None).')
 @click.option('--gene_descriptions','-g', default=None,
               help='Tab separated file with gene descriptions (default=None).')
-@click.option('--p_val_cut_off','-pc', default=0.1,
-              help='p-value cut off for including gene sets. (default=0.05)')
-@click.option('--score_cut_off','-sc', default=1.282,
-              help='Score cut off for including candidates. (default=1.282)')
+@click.option('--fdr_level','-fdr', default=0.05,
+              help='FDR level to control. (default=0.05)')
+@click.option('--score_cut_off','-sc', default=1.96,
+              help='Score cut off for including candidates. (default=None)')
 @click.option('--full/--not_full', default=False,
               help='Give full results for supplementary (default=False).')
 @click.option('--go/--no_go', default=False,
@@ -336,7 +336,7 @@ def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candida
               help='Output supplementary tables with TFs, kinases, unknowns, '
                    'hypotheticals and transporters (default=True).')
 def post(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
-         go, supplementary, p_val_cut_off, score_cut_off, full):
+         go, supplementary, fdr_level, score_cut_off, full):
     """
     Post-process MORPH bulk results.
 
@@ -359,11 +359,11 @@ def post(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
     if set_descriptions is not None and go:
         raise ValueError("Both gene set descriptions were given and the go flag was set. Please choose one of the two.")
 
-    if p_val_cut_off < 0 or p_val_cut_off > 1:
-        raise ValueError("No maeningful p-value cut off {0}".format(p_val_cut_off))
+    if fdr_level < 0 or fdr_level > 1:
+        raise ValueError("No meaningful p-value cut off {0}".format(fdr_level))
 
     summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
-            go, supplementary, p_val_cut_off, score_cut_off, full)
+            go, supplementary, fdr_level, score_cut_off, full)
 
     click.echo(click.style('{:<80}'.format('post'), bg='green'))
 

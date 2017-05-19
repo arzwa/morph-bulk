@@ -97,7 +97,7 @@ It is important that your data is structured as follows:
 Note that each clustering type should have it's own directory (here e.g.
 click) and that the names of the clusterings should correspond to the
 respective data set it is a clustering of, with as filename
-`<dataset>.<clustering type>.<clustering`.
+`<dataset>.<clustering type>.<clustering>`.
 
 The data sets should be structured as plain matrices with header:
 ```

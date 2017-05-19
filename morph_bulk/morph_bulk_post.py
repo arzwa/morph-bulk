@@ -6,17 +6,16 @@ Part of morph_bulk_run project
 """
 
 # IMPORTS
-import click
 import pandas as pd
 import os
 import glob
 import re
-import warnings
 import logging
+import scipy.stats as ss
 
 
 def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
-            go, supplementary, p_val_cut_off, score_cut_off, full):
+            go, supplementary, fdr_level, score_cut_off, full):
     """
     Generates various summary files from a MORPH bulk run
     :param input_dir: MORPH bulk results
@@ -25,7 +24,7 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
     :param set_descriptions: gene set descriptions (tab delimited)
     :param go: boolean flag, use GO data from godb?
     :param supplementary: boolean flag, generate supplementary tables with TFs, kinases, etc.?
-    :param p_val_cut_off: p-value cut off for inclusion of MORPH results
+    :param fdr_level: level to control the FDR
     :param score_cut_off: z-score cut off for inclusion of candidates
     :param full: boolean flag, full supplementary tables?
     :return: summary.csv and supplementary tables if desired
@@ -70,9 +69,10 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
         results_summary[morph_parsed['group']] = morph_parsed
 
         # extended annotation
-        if p_value < p_val_cut_off:
+        if p_value < fdr_level:
+
             for candidate in candidates.keys():
-                if float(candidates[candidate]['score']) > score_cut_off:
+                if not score_cut_off or float(candidates[candidate]['score']) > score_cut_off:
                     extended_annot[i] = candidates[candidate]
                     extended_annot[i]['gene_set'] = morph_parsed['group']
                     extended_annot[i]['ausr'] = morph_parsed['ausr']
@@ -82,34 +82,59 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
                     if morph_parsed['group'] in desc_dict.keys():
                         extended_annot[i]['set_description'] = desc_dict[morph_parsed['group']]
 
-                    else:
+                    elif not go:
                         logging.warning("No set description found for {0}".format(morph_parsed['group']))
 
                     i += 1
 
+    summary_df = pd.DataFrame.from_dict(results_summary, orient='index')
+    extended_annot_df = pd.DataFrame.from_dict(extended_annot, orient='index')
+
+    # FDR correction
+    logging.info('Applying FDR corretion at gene set level (Benjamini & Hochberg method, fdr-level = {})'.format(
+        fdr_level))
+    summary_df = benjamini_hochberg(summary_df, alpha=fdr_level)
+    alpha_level_two = (len(summary_df[summary_df['BH-corrected']<fdr_level])*fdr_level)/len(summary_df)
+    logging.info('FDR correction at gene level (FWER correction method of Holm, control at FWER = {})'.format(
+        alpha_level_two))
+
+    cols = list(extended_annot_df.columns) + ['p-score']
+
+
+    significant_sets = []
+    for gene_set in summary_df[summary_df['BH-corrected']<fdr_level].index:
+        logging.info("Evaluating {}".format(gene_set))
+        candidates_df = extended_annot_df[extended_annot_df['gene_set'] == gene_set]
+        # significant = holm(candidates_df, alpha=alpha_level_two, column='score')
+        significant_sets.append(candidates_df)
+    corrected_extended = pd.concat(significant_sets)
+
+
     # supplementary data tables
     if supplementary:
         regexps = compile_regexps()
-        supplementary_dfs = get_supplementary(extended_annot, regexps)
-
-    summary_df = pd.DataFrame.from_dict(results_summary, orient='index')
-    extended_annot_df = pd.DataFrame.from_dict(extended_annot, orient='index')
+        supplementary_dfs = get_supplementary(corrected_extended.to_dict(orient='index'), regexps)
 
     if go:
         summary_df = pd.concat([summary_df, go_df], axis=1)
         summary_df = summary_df[summary_df['p-value'] <= 1]
 
+
     # Print some data to screen
-    logging.info("~"*50)
-    logging.info("{:^50}".format("Total number of gene sets: {}".format(len(list(summary_df.index)))))
-    logging.info("{:^50}".format("Number of significant scoring gene sets: {}".format(len(
-        list(summary_df[summary_df['p-value'] < p_val_cut_off].index)))))
-    logging.info("~"*50)
+    logging.info("~"*80)
+    logging.info("{:^80}".format("Total number of gene sets: {}".format(len(list(summary_df.index)))))
+    logging.info("{:^80}".format("Number of significant scoring gene sets (FDR controlled): {}".format(len(
+        list(summary_df[summary_df['BH-corrected'] < fdr_level].index)))))
+    logging.info("{:^80}".format("Number of genes with new annotation: {}".format(len(
+        set(list(corrected_extended['gene']))))))
+    logging.info("{:^80}".format("Number of annotations: {}".format(len(
+        set(list(corrected_extended.index))))))
+    logging.info("~"*80)
 
     # Generate csv's
     summary_df = summary_df.sort(['p-value'], ascending=True)
     summary_df.to_csv(os.path.join(output_dir, 'summary.csv'), index_col=0)
-    extended_annot_df.to_csv(os.path.join(output_dir, 'extended_annotation.csv'), index_col=0)
+    corrected_extended.to_csv(os.path.join(output_dir, 'extended_annotation.csv'), index_col=0)
 
     if supplementary:
         for sup in supplementary_dfs.keys():
@@ -268,3 +293,23 @@ def get_p_value(n, ausr, p_values):
             break
 
     return p_value
+
+
+def benjamini_hochberg(df, alpha=0.05, column='p-value'):
+    m = len(df.index)
+    df = df.sort_values(column, ascending=True)
+    for i in range(m):
+        if (i / m) * alpha < df.ix[df.index[i]][column]:
+            df['BH-corrected'] = (m/i) * df[column]
+            return df
+
+
+def holm(df, alpha, column='score'):
+    m = len(df.index)
+    df['p-score'] = ss.norm.sf([float(x) for x in list(df[column])])
+    df = df.sort_values('p-score', ascending=True)
+    for i in range(m):
+        if alpha/(m+1-i) < df.ix[df.index[i]]['p-score']:
+            logging.info('holm: {}'.format(i))
+            return df[:i-1]
+    return df
