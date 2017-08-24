@@ -4,7 +4,7 @@ Arthur Zwaenepoel 2016 - 2017
 
 This Command line interface (CLI) bundles several command line utilities to
 perform bulk runs with MORPH v1.0.6 (C++ version), which is included in this
-repository (refer to the <ahref='https://github.com/arzwa/morphbulk/wiki'>wiki
+repository (refer to the <a href='https://github.com/arzwa/morphbulk/wiki'>wiki
 </a> for further installation instructions. The CLI is written using click in
 Python3.5 and runs on UNIX based systems.
 
