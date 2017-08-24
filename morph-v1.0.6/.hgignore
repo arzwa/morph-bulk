@@ -1,6 +1,0 @@
-syntax: regexp
-.*\.orig
-.*\.swp
-^\.project$
-^\.cproject$
-^build$
