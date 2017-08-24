@@ -12,7 +12,6 @@ from morph_bulk.add_species import format_groups, write_config, check_directory,
 from morph_bulk.morph_chunked import morph_chunked_run
 from morph_bulk.random_baits import random_bulk_run
 from morph_bulk.morph_bulk_post import summary
-from morph_bulk.pre_process import filter_matrix, normalize_matrix, cluster_matrix
 from morph_bulk.morph_bulk_to_rdf import morph_to_rdf
 
 
@@ -87,8 +86,9 @@ def pipeline(base_path, species, functional_annotation, output_directory,
 
     Python command line utility for performing MORPH bulk analysis in a pipeline fashion.
 
-    \b
     Requires as input:
+
+    \b
     - Base path (path to dir with config file, data sets and clusterings). Should have the following structure.
         base_path/
             ./datasets
@@ -102,11 +102,13 @@ def pipeline(base_path, species, functional_annotation, output_directory,
                     ./dataset1.ppi.clustering
                     ./dataset2.ppi.clustering
             ./gene_descriptions.tsv
-
+    \b
+    \b
     - Species name
     - Functional annotation (tab delimited file with gene to functional term mapping)
     - Path to MORPH executable (tested with MORPH C++ v1.0.6)
     - Output directory
+    \b
     """
     config = MorphConfig(base_path, species, functional_annotation,
                          output_directory, morph_path, cache_path, gene_sets_type)
@@ -164,10 +166,10 @@ def pipeline(base_path, species, functional_annotation, output_directory,
               help="Gene set file (rows: GO_ID [TAB] gene1, gene2.)")
 @click.option('--gene_sets_type','-t', default='go',
               help="What type of gene sets you provide (e.g. GO, mapman, ...).")
-@click.option('--plaza/--no_plaza', default=True,
-              help="PLAZA style csv? Or TAB separated gene TAB GO? (Default: PLAZA)")
-@click.option('--cache_path','-c', default='./tmp/cache',
-              help="Path to caching directory for MORPH, default = ./tmp/cache")
+@click.option('--plaza', default=False, is_flag=True,
+              help="PLAZA style csv? Or TAB separated gene TAB GO? (Default: False)")
+@click.option('--cache_path','-c', default='./morph_cache',
+              help="Path to caching directory for MORPH, default = ./morph_cache")
 def add(base_path, species, functional_annotation, gene_sets, gene_sets_type, plaza, cache_path):
     """
     Add a species to Morph.
@@ -175,9 +177,11 @@ def add(base_path, species, functional_annotation, gene_sets, gene_sets_type, pl
     Writes a morph config file (yaml format).
     and jobs for bulk run if gene sets are provided.
 
+    \b
     INPUT:
         - BASE_PATH: the full absolute path to the directory with data
         - SPECIES: a species name/ID (without spaces)
+    \b
 
     The directory should have following structure :
 
@@ -200,25 +204,25 @@ def add(base_path, species, functional_annotation, gene_sets, gene_sets_type, pl
     """
     morph_config = MorphConfig(base_path, species, gene_sets, cache_path, gene_sets_type)
 
-    logging.info("Checking directory structure ...")
+    logging.info("Checking directory structure")
     check_directory(morph_config)
     if functional_annotation is not None and gene_sets is not None:
         raise AssertionError("Both functional annotation and gene sets provided, please provide only one.")
 
-    logging.info("Writing configuration file for Morph v1.0.6 ...")
+    logging.info("Writing configuration file for MORPH v1.0.6")
     write_config(morph_config)
 
     if functional_annotation:
-        logging.info("Processing functional annotation ...")
+        logging.info("Processing functional annotation")
         morph_config.gene_sets = functional_annotation
         format_groups(morph_config, plaza)
-        logging.info("Writing joblist ...")
+        logging.info("Writing jobs")
         write_jobs(morph_config)
 
     elif gene_sets:
-        logging.info("Processing gene sets ...")
+        logging.info("Processing gene sets")
         morph_config.gene_sets = gene_sets
-        logging.info("Writing joblist ...")
+        logging.info("Writing jobs")
         write_jobs(morph_config)
 
 
@@ -259,7 +263,7 @@ def random(morph_config_file, data_sets_dir, output_file, morph_path, range_star
 @click.option('--number_of_candidates','-n', default=30, help='Number of candidates to output (default=30).')
 @click.option('--morph_path','-m', default='morph',
               help='Path to MORPH CLI.')
-def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candidates, morph_path):
+def bulk(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candidates, morph_path):
     """
     Run MORPH in bulk (chunked).
 
@@ -286,7 +290,7 @@ def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candida
 @click.option('--fdr_level','-fdr', default=0.05,
               help='FDR level to control. (default=0.05)')
 @click.option('--score_cut_off','-sc', default=1.96,
-              help='Score cut off for including candidates. (default=None)')
+              help='z-core cut off for including candidates. (default=1.96)')
 @click.option('--full/--not_full', default=False,
               help='Give full results for supplementary (default=False).')
 @click.option('--go/--no_go', default=False,
@@ -302,13 +306,17 @@ def post(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
     Command line utility for post-processing a MORPH bulk run.
     Particularly useful for getting some statistics of a bulk run.
 
-    OUTPUT:\n
-        - summary.csv\n
-        - supplementary tables:\n
-            - tf.csv\n
-            - signal.csv\n
-            - transporter.csv\n
-            - unknown.csv\n
+    \b
+    INPUT:
+        - INPUT_DIR: the directory with MORPH output results
+    OUTPUT:
+        - summary.csv
+        - supplementary tables:
+            - tf.csv
+            - signal.csv
+            - transporter.csv
+            - unknown.csv
+    \b
     """
     if p_values is None:
         raise ValueError("No data to estimate p-values provided (see random_baits.py).")

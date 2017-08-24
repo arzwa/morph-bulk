@@ -6,10 +6,10 @@ Part of morph_bulk_run project
 """
 
 # IMPORTS
-import click
 import uuid
 import ruamel.yaml as yaml
 import os
+import glob
 import logging
 
 
@@ -99,4 +99,7 @@ def run_morph(morph_path, morph_config, job_list, output_dir, number):
     :return: MORPH results in output_dir
     """
     os.system("{0} {1} {2} {3} {4}".format(morph_path, morph_config, job_list, output_dir, number))
+    for f in glob.glob(os.path.join(output_dir, '*')):
+        os.system("cut -f1,2,3,4 {0} > {1}".format(f, os.path.join(output_dir, 'tmp.txt')))
+        os.system("mv {0} {1}".format(os.path.join(output_dir, 'tmp.txt'), f))
     os.remove(job_list)

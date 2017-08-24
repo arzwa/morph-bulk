@@ -4,7 +4,6 @@ Arthur Zwaenepoel - 2016
 
 Part of morph_bulk_run project
 """
-import click
 import pandas as pd
 import random
 import ruamel.yaml as yaml

@@ -42,6 +42,8 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
         p_values['size'] = [int(p) for p in p_values['size']]
         columns.append('p-value')
 
+    desc_dict = {}
+
     if set_descriptions:
         desc_dict = get_descriptions(set_descriptions)
 
@@ -63,7 +65,7 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
         p_value = get_p_value(morph_parsed['genes_in_data'], morph_parsed['ausr'], p_values)
         morph_parsed['p-value'] = p_value
 
-        if not go:
+        if not go and set_descriptions:
             morph_parsed['set description'] = desc_dict[morph_parsed['group']]
 
         results_summary[morph_parsed['group']] = morph_parsed
@@ -91,24 +93,22 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
     extended_annot_df = pd.DataFrame.from_dict(extended_annot, orient='index')
 
     # FDR correction
-    logging.info('Applying FDR corretion at gene set level (Benjamini & Hochberg method, fdr-level = {})'.format(
+    logging.info('Applying FDR correction at gene set level (Benjamini & Hochberg method, FDR-level = {})'.format(
         fdr_level))
     summary_df = benjamini_hochberg(summary_df, alpha=fdr_level)
-    alpha_level_two = (len(summary_df[summary_df['BH-corrected']<fdr_level])*fdr_level)/len(summary_df)
-    logging.info('FDR correction at gene level (FWER correction method of Holm, control at FWER = {})'.format(
-        alpha_level_two))
-
-    cols = list(extended_annot_df.columns) + ['p-score']
-
 
     significant_sets = []
     for gene_set in summary_df[summary_df['BH-corrected']<fdr_level].index:
         logging.info("Evaluating {}".format(gene_set))
         candidates_df = extended_annot_df[extended_annot_df['gene_set'] == gene_set]
-        # significant = holm(candidates_df, alpha=alpha_level_two, column='score')
         significant_sets.append(candidates_df)
-    corrected_extended = pd.concat(significant_sets)
 
+    if significant_sets:
+        corrected_extended = pd.concat(significant_sets)
+
+    else:
+        logging.warning('No significant sets found: EXIT')
+        corrected_extended = pd.DataFrame()
 
     # supplementary data tables
     if supplementary:
@@ -119,6 +119,10 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
         summary_df = pd.concat([summary_df, go_df], axis=1)
         summary_df = summary_df[summary_df['p-value'] <= 1]
 
+    # Generate csv's
+    summary_df = summary_df.sort_values(['p-value'], ascending=True)
+    summary_df.to_csv(os.path.join(output_dir, 'summary.csv'))
+    corrected_extended.to_csv(os.path.join(output_dir, 'extended_annotation.csv'))
 
     # Print some data to screen
     logging.info("~"*80)
@@ -131,19 +135,16 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
         set(list(corrected_extended.index))))))
     logging.info("~"*80)
 
-    # Generate csv's
-    summary_df = summary_df.sort(['p-value'], ascending=True)
-    summary_df.to_csv(os.path.join(output_dir, 'summary.csv'), index_col=0)
-    corrected_extended.to_csv(os.path.join(output_dir, 'extended_annotation.csv'), index_col=0)
-
     if supplementary:
         for sup in supplementary_dfs.keys():
             if full:
-                supplementary_dfs[sup].to_csv(os.path.join(output_dir, sup + '.csv'), index_col=0)
-            else:
+                supplementary_dfs[sup].to_csv(os.path.join(output_dir, sup + '.csv'))
+            elif len(supplementary_dfs[sup])>0:
+                if 'set_description' not in supplementary_dfs[sup].columns:
+                    supplementary_dfs[sup]['set_description'] = ['']*len(supplementary_dfs[sup])
                 df = pd.DataFrame({
                     'genes': supplementary_dfs[sup].groupby([
-                        'gene_set', 'set_description', 'ausr', 'p-value', 'genes_in_data'
+                        'set_description', 'ausr', 'p-value', 'genes_in_data'
                     ])['gene'].apply(list).apply(" ".join)}).reset_index()
                 df.to_csv(os.path.join(output_dir, sup + '.csv'))
 
@@ -299,8 +300,8 @@ def benjamini_hochberg(df, alpha=0.05, column='p-value'):
     m = len(df.index)
     df = df.sort_values(column, ascending=True)
     for i in range(m):
-        if (i / m) * alpha < df.ix[df.index[i]][column]:
-            df['BH-corrected'] = (m/i) * df[column]
+        if ((i +1)/ m) * alpha < df.ix[df.index[i]][column]:
+            df['BH-corrected'] = (m/(i+1)) * df[column]
             return df
 
 

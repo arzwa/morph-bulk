@@ -6,7 +6,6 @@ Part of morph_bulk_run project
 """
 
 # IMPORTS
-import click
 import pandas as pd
 import os
 import glob

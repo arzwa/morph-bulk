@@ -7,6 +7,7 @@ Part of morph_bulk_run project
 
 import ruamel.yaml as yaml
 import os
+import logging
 import glob
 
 
@@ -31,6 +32,8 @@ class MorphConfig(object):
         README
     """
     def __init__(self, base_path, species, gene_sets, cache_path, gene_sets_type, output_dir='./', morph_path='morph'):
+        if base_path[-1] == '/':
+            base_path = base_path[:-1]
         self.base_path = base_path
         self.species = species
         self.gene_sets = gene_sets
@@ -51,10 +54,13 @@ def check_directory(morph_config):
     """
     for i in ['clusterings', 'datasets']:
         if not os.path.isdir(os.path.join(morph_config.base_path, i)):
-            raise NotADirectoryError("{} not found".format(i))
+            logging.error("{} not found".format(i))
 
     if not os.path.exists(os.path.join(morph_config.base_path,'gene_descriptions.tsv')):
-        raise FileNotFoundError('gene_descriptions.tsv not found!')
+        logging.error('gene_descriptions.tsv not found!')
+
+    if not os.path.exists(morph_config.cache):
+        logging.error('cache directory {} does not exist!'.format(morph_config.cache))
 
 
 def format_groups(morph_config, plaza=False):
