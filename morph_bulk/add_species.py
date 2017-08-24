@@ -30,7 +30,7 @@ class MorphConfig(object):
             ./gene_descriptions.tsv
         README
     """
-    def __init__(self, base_path, species, gene_sets, output_dir, morph_path, cache_path, gene_sets_type):
+    def __init__(self, base_path, species, gene_sets, cache_path, gene_sets_type, output_dir='./', morph_path='morph'):
         self.base_path = base_path
         self.species = species
         self.gene_sets = gene_sets
@@ -53,7 +53,7 @@ def check_directory(morph_config):
         if not os.path.isdir(os.path.join(morph_config.base_path, i)):
             raise NotADirectoryError("{} not found".format(i))
 
-    if not os.path.exists('./gene_descriptions.tsv'):
+    if not os.path.exists(os.path.join(morph_config.base_path,'gene_descriptions.tsv')):
         raise FileNotFoundError('gene_descriptions.tsv not found!')
 
 
@@ -116,17 +116,17 @@ def write_config(morph_config):
         for clustering_type in glob.glob(os.path.join(morph_config.base_path, 'clusterings', '*')):
             for clustering in glob.glob(os.path.join(clustering_type, '*')):
                 clustering_name = clustering.split("/")[-1]
-                if len(clustering_name.split('.')) == 3:
+                if len(clustering_name.split('.')) >= 3:
 
                     # expression matrix specific clustering e.g. click
                     if clustering_name.split('.')[0] == exp_mat_name.split('.')[0]:
-                        name = clustering_name.split('.')[-2]
+                        name = os.path.basename(clustering_type)
                         clusterings.append({"name": name,
                                             "path": os.path.join('clusterings', name, os.path.basename(clustering))})
 
                 else:
                     # expression matrix indepedent clusterings e.g. is_enzyme
-                    name = clustering_name.split('.')[-2]
+                    name = os.path.basename(clustering_type)
                     clusterings.append({"name": name,
                                         "path": os.path.join('clusterings', name, os.path.basename(clustering))})
 

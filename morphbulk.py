@@ -16,7 +16,7 @@ from morph_bulk.pre_process import filter_matrix, normalize_matrix, cluster_matr
 from morph_bulk.morph_bulk_to_rdf import morph_to_rdf
 
 
-# CLI
+# CLI ------------------------------------------------------------------------------------------------------------------
 @click.group()
 @click.option('--verbose', type=click.Choice(['silent', 'info', 'debug']),
               default='info', help="Verbosity level, default = info.")
@@ -45,10 +45,10 @@ def cli(verbose):
         logging.basicConfig(format='%(asctime)s: %(levelname)s\t%(message)s', level=logging.INFO,
                             stream=sys.stdout)
 
-    click.echo(click.style('{:^80}'.format('MORPHBULK v1.0'), bg='blue'))
     pass
 
 
+# PIPELINE -------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('base_path', type=click.Path(exists=True))
 @click.argument('species')
@@ -86,6 +86,7 @@ def pipeline(base_path, species, functional_annotation, output_directory,
     MORPH bulk run pipeline.
 
     Python command line utility for performing MORPH bulk analysis in a pipeline fashion.
+
     \b
     Requires as input:
     - Base path (path to dir with config file, data sets and clusterings). Should have the following structure.
@@ -97,17 +98,16 @@ def pipeline(base_path, species, functional_annotation, output_directory,
                 ./click
                     ./dataset1.click.clustering
                     ./dataset2.click.clustering
-                ./ppi\n
+                ./ppi
                     ./dataset1.ppi.clustering
                     ./dataset2.ppi.clustering
             ./gene_descriptions.tsv
+
     - Species name
     - Functional annotation (tab delimited file with gene to functional term mapping)
     - Path to MORPH executable (tested with MORPH C++ v1.0.6)
     - Output directory
     """
-    click.echo(click.style('{:<80}'.format('pipeline'), bg='green'))
-
     config = MorphConfig(base_path, species, functional_annotation,
                          output_directory, morph_path, cache_path, gene_sets_type)
 
@@ -153,9 +153,8 @@ def pipeline(base_path, species, functional_annotation, output_directory,
         logging.info("No random run performed, no precomputed p-values provided")
         logging.info("Done!")
 
-    click.echo(click.style('{:<80}'.format('pipeline'), bg='green'))
 
-
+# ADD ------------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('base_path', type=click.Path(exists=True))
 @click.argument('species')
@@ -163,7 +162,7 @@ def pipeline(base_path, species, functional_annotation, output_directory,
               help="Functional annotation file")
 @click.option('--gene_sets','-s', default=None,
               help="Gene set file (rows: GO_ID [TAB] gene1, gene2.)")
-@click.option('--gene_sets_type','-t',
+@click.option('--gene_sets_type','-t', default='go',
               help="What type of gene sets you provide (e.g. GO, mapman, ...).")
 @click.option('--plaza/--no_plaza', default=True,
               help="PLAZA style csv? Or TAB separated gene TAB GO? (Default: PLAZA)")
@@ -174,26 +173,32 @@ def add(base_path, species, functional_annotation, gene_sets, gene_sets_type, pl
     Add a species to Morph.
 
     Writes a morph config file (yaml format).
-    and joblist for bulk run if gene sets are provided.
-    Basepath of directory with data for Morph.
-    The directory should have following structure :\n
-    base_path/\n
-        ./datasets\n
-            ./dataset1\n
-            ./dataset2\n
-        ./clusterings\n
-            ./click\n
-                ./dataset1.click.clustering\n
-                ./dataset2.click.clustering\n
-            ./ppi\n
-                ./dataset1.ppi.clustering\n
-                ./dataset2.ppi.clustering\n
-        ./gene_descriptions.tsv\n
+    and jobs for bulk run if gene sets are provided.
+
+    INPUT:
+        - BASE_PATH: the full absolute path to the directory with data
+        - SPECIES: a species name/ID (without spaces)
+
+    The directory should have following structure :
+
+    \b
+    base_path/
+        ./datasets
+            ./dataset1
+            ./dataset2
+        ./clusterings
+            ./click
+                ./dataset1.click.clustering
+                ./dataset2.click.clustering
+            ./ppi
+                ./dataset1.ppi.clustering
+                ./dataset2.ppi.clustering
+        ./gene_descriptions.tsv
+    \b
+
     Works with Morph v1.0.6
     """
-    click.echo(click.style('{:<80}'.format('add'), bg='green'))
-
-    morph_config = MorphConfig(base_path, species, gene_sets, None, None, cache_path, gene_sets_type)
+    morph_config = MorphConfig(base_path, species, gene_sets, cache_path, gene_sets_type)
 
     logging.info("Checking directory structure ...")
     check_directory(morph_config)
@@ -203,26 +208,26 @@ def add(base_path, species, functional_annotation, gene_sets, gene_sets_type, pl
     logging.info("Writing configuration file for Morph v1.0.6 ...")
     write_config(morph_config)
 
-    if functional_annotation is not None:
+    if functional_annotation:
         logging.info("Processing functional annotation ...")
         morph_config.gene_sets = functional_annotation
         format_groups(morph_config, plaza)
+        logging.info("Writing joblist ...")
+        write_jobs(morph_config)
 
-    elif gene_sets is not None:
+    elif gene_sets:
         logging.info("Processing gene sets ...")
         morph_config.gene_sets = gene_sets
-
-    logging.info("Writing joblist ...")
-    write_jobs(morph_config)
-
-    click.echo(click.style('{:<80}'.format('add'), bg='green'))
+        logging.info("Writing joblist ...")
+        write_jobs(morph_config)
 
 
+# RANDOM ---------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('morph_config_file', type=click.Path(exists=True))
 @click.argument('data_sets_dir', type=click.Path(exists=True))
 @click.argument('output_file', type=click.Path(exists=False))
-@click.option('--morph_path','-m', default='/group/biocomp/projects/deep_genome/tools/morph/1.0.6/morph',
+@click.option('--morph_path','-m', default='morph',
               help='Path to MORPH CLI.')
 @click.option('--range_start','-r1', default=5,
               help='Number of genes per random set to start with, DEFAULT=5')
@@ -241,61 +246,18 @@ def random(morph_config_file, data_sets_dir, output_file, morph_path, range_star
 
     Perform MORPH on n random sets of genes in a defined range [r1,r2]
     """
-    click.echo(click.style('{:<80}'.format('random'), bg='green'))
-
     random_bulk_run(morph_config_file, data_sets_dir, output_file, morph_path, range_start,
                     range_end, number_total, chunk_size, background_set)
 
-    click.echo(click.style('{:<80}'.format('random'), bg='green'))
 
-
-@cli.command(context_settings={'help_option_names': ['-h', '--help']})
-@click.argument('input_matrix', type=click.Path(exists=True))
-@click.option('-f','--filter_perc', default=0.7,
-              help="filter should retain x% of matrix")
-@click.option('--filter/--no_filter', default=True,
-              help="filter matrix?")
-@click.option('--normalize', '-n', default=None,
-              help="Path to normalization script, if provided, will perform normalization")
-@click.option('--cluster','-c', default=None,
-              help="Path to clustering script, if provided, will perform clustering")
-def pre(input_matrix, filter_perc, filter, normalize, cluster):
-    """
-    Preprocess expression matrices.
-
-    Preprocess expression matrices for MORPH usage.
-    Enables filtering, normalization and clustering (not yet).
-
-    :param input_matrix: expression matrix, tsv format
-    :param filter_perc: percentage of genes to keep after filtering
-    :param filter: boolean
-    :param normalize: path to normalization script
-    :param cluster: path to clustering script
-    :return: filtered and normalized expression matrix + clustering
-    """
-    if filter:
-        logging.info("Filtering")
-        matrix = filter_matrix(input_matrix, filter_perc)
-        matrix.to_csv(input_matrix + ".filtered", sep="\t")
-        input_matrix += ".filtered"
-
-    if normalize is not None:
-        logging.info("Normalizing")
-        normalize_matrix(input_matrix, normalize)
-        input_matrix += ".normalized"
-
-    if cluster:
-        logging.info("Clustering")
-        cluster_matrix(cluster, input_matrix)
-
-
+# MORPH ----------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('morph_config_file', type=click.Path(exists=True))
 @click.argument('jobs_dir', type=click.Path(exists=True))
 @click.argument('output_dir', type=click.Path(exists=False))
 @click.option('--chunk_size','-s', default=100, help='Chunk size (default=100).')
 @click.option('--number_of_candidates','-n', default=30, help='Number of candidates to output (default=30).')
-@click.option('--morph_path','-m', default='/group/biocomp/projects/deep_genome/tools/morph/1.0.6/morph',
+@click.option('--morph_path','-m', default='morph',
               help='Path to MORPH CLI.')
 def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candidates, morph_path):
     """
@@ -307,13 +269,10 @@ def morph(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candida
     Uses UNIX commands.
     """
     # Check directories and files
-    click.echo(click.style('{:<80}'.format('morph'), bg='green'))
-
     morph_chunked_run(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candidates, morph_path)
 
-    click.echo(click.style('{:<80}'.format('morph'), bg='green'))
 
-
+# POST -----------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('input_dir', type=click.Path(exists=True))
 @click.argument('output_dir', type=click.Path(exists=False))
@@ -351,8 +310,6 @@ def post(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
             - transporter.csv\n
             - unknown.csv\n
     """
-    click.echo(click.style('{:<80}'.format('post'), bg='green'))
-
     if p_values is None:
         raise ValueError("No data to estimate p-values provided (see random_baits.py).")
 
@@ -365,9 +322,8 @@ def post(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
     summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions,
             go, supplementary, fdr_level, score_cut_off, full)
 
-    click.echo(click.style('{:<80}'.format('post'), bg='green'))
 
-
+# RDF ------------------------------------------------------------------------------------------------------------------
 @cli.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('input_dir', type=click.Path(exists=True))
 @click.argument('output_file', type=click.Path(exists=False))
@@ -409,12 +365,8 @@ def rdf(input_dir, output_file, p_values, gene_descriptions, bait_descriptions,
 
         - output_file: RDF graph in turtle (.ttl) format
     """
-    click.echo(click.style('{:<80}'.format('rdf'), bg='green'))
-
     morph_to_rdf(input_dir, output_file, p_values, gene_descriptions, bait_descriptions,
                  gene_families, bait_type, species, p_val_cut_off, score_cut_off, max_candidates)
-
-    click.echo(click.style('{:<80}'.format('rdf'), bg='green'))
 
 
 if __name__ == '__main__':

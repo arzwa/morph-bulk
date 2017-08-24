@@ -55,6 +55,7 @@ option.
 
     $ morphbulk --verbose [silent|info|debug] [COMMAND]
 
+
 ### Input data:
 
 It is important that your data is structured as follows:

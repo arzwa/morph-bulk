@@ -12,7 +12,12 @@ setup(
     py_modules=['morphbulk'],
     include_package_data=True,
     install_requires=[
-        'click',
+        'click==6.7',
+        'rdflib==4.2.2',
+        'coloredlogs==7.3',
+        'numpy',
+        'pandas',
+        'ruamel.yaml==0.14.9'
     ],
     entry_points='''
         [console_scripts]

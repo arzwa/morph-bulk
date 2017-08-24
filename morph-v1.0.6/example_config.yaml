@@ -1,0 +1,44 @@
+# Default Morph config
+#
+# Specifies which species are available for finding pathways identified by
+# genes of interest in
+cache_path: /tmp/morph  # Path to directory with read-write access for morph to use as cache
+species_data_path: /home/my_user_name  # if provided, all paths are prefixed with this path
+species:
+    - name: Arabidopsis  # unique identifier (string)
+      data_path: my_particular_dir_with_arabidopsis_data
+      gene_descriptions: gene_descriptions  # tab separated file mapping gene to gene-description
+      gene_web_page: 'http://www.arabidopsis.org/servlets/TairObject?name=$name&type=locus'  # url to page of gene, use $name as placeholder for the gene name
+      gene_pattern: 'AT[0-9]G[0-9]{5}'  # regex pattern (perl syntax) that all valid genes should match, match is case-insensitive. http://www.boost.org/doc/libs/1_57_0/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html
+      expression_matrices:
+          - name: 'Seed_GH'
+            path: data_sets/Seed_GH_DataSet.txt
+            clusterings:
+                - name: 'PPI matisse'
+                  path: cluster_solution/Seed_GH_ppi_matisse_0.4.txt
+                - name: 'CLICK'
+                  path: cluster_solution/Seed_GH_CLICK_ClusteringSol.txt
+                - name: 'IsEnzyme'
+                  path: cluster_solution/Seed_GH_IsEnzymeClusteringSol.txt
+          - name: 'Tissues'
+            path: data_sets/TissuesData.txt
+            clusterings:
+                - name: 'IsEnzyme'
+                  path: cluster_solution/Tissues_IsEnzymeClusteringSol.txt
+                - name: 'Metabolic matisse'
+                  path: cluster_solution/Tissues_Metabolic_Network_ClusteringSol.txt
+                - name: 'PPI matisse'
+                  path: cluster_solution/Tissues_PPI_Network_ClusteringSol.txt
+                - name: 'CLICK'
+                  path: cluster_solution/Tissues_CLICK_ClusteringSol.txt
+          - name: 'Seedlings'
+            path: data_sets/SeedlingsDataSet.txt
+            clusterings:
+                - name: 'IsEnzyme'
+                  path: cluster_solution/Seedlings_IsEnzymeClusteringSol.txt
+                - name: 'Metabolic matisse'
+                  path: cluster_solution/Seedlings_Metabolic_Network_ClusteringSol.txt
+                - name: 'PPI matisse'
+                  path: cluster_solution/Seedlings_PPI_Network_ClusteringSol.txt
+                - name: 'CLICK'
+                  path: cluster_solution/Seedlings_CLICK_ClusteringSol.txt

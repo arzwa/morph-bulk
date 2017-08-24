@@ -26,22 +26,19 @@ def morph_chunked_run(morph_config_file, jobs_dir, output_dir, chunk_size, numbe
     """
     # Check directories and files
     if not os.path.exists(jobs_dir):
-        raise FileNotFoundError("Directory {} not found!".format(jobs_dir))
-    if os.path.exists(output_dir):
-        raise IsADirectoryError("Directory {} already exists!".format(output_dir))
-    if not os.path.exists(morph_path):
-        raise FileNotFoundError("MORPH executable not found!")
+        logging.error("Directory {} not found!".format(jobs_dir))
+    if not os.path.exists(output_dir):
+        logging.info("Creating output directory")
+        os.system('mkdir {}'.format(output_dir))
     if not os.path.exists(morph_config_file):
-        raise FileNotFoundError("Config file {} not found!".format(morph_config_file))
+        logging.error("Config file {} not found!".format(morph_config_file))
 
     # Read in the config file
     with open(morph_config_file,'r') as m:
         morph_config = m.read()
     morph_config = yaml.load(morph_config, yaml.RoundTripLoader)
 
-    # Make output directory
-    print("mkdir {}".format(output_dir))
-    os.system('mkdir {}'.format(output_dir))
+
 
     # Get jobs
     jobs = os.listdir(jobs_dir)

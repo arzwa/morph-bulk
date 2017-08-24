@@ -1,0 +1,10 @@
+# Example Morph job list
+# Specifies sets of genes of interest to pass to morph
+
+data_path: /home/my_user_name/my_dir_with_data  # all paths below are prefixed with this path
+jobs:
+    - species_name: Arabidopsis  # references a species' name in morph's config
+      data_path: my_dir_with_arabidopsis_data # each goi group file is prefixed with this
+      genes_of_interest:
+          - name: goi  # a human friendly name, this will be part of the filename where the result will be stored
+            path: gois/this_particular_set_of_genes.txt
