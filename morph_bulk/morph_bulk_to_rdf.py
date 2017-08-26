@@ -12,21 +12,25 @@ import glob
 import logging
 from rdflib import Graph, Literal, RDF, URIRef, RDFS
 from rdflib.namespace import Namespace
+from .morph_bulk_post import get_go_info
 
 
-def morph_to_rdf(input_dir, output_file, p_values, gene_descriptions, bait_descriptions,
+def morph_to_rdf(input_dir, output_file, p_values, gene_descriptions, bait_descriptions, go,
                  gene_families, bait_type, species, p_val_cut_off, score_cut_off, max_candidates):
     # check if gene descriptions provided
     gene_description_dict = {}
     gd = False
-    if gene_descriptions is not None:
+    if gene_descriptions:
         gene_description_dict = gd_dict(gene_descriptions)
         gd = True
 
     # check if bait descriptions provided
     bait_description_dict = {}
-    if bait_descriptions is not None:
+    if bait_descriptions and not go:
         bait_description_dict = gd_dict(bait_descriptions)
+
+    if go:
+        go_df, bait_description_dict = get_go_info()
 
     # check if gene families provided
     gf_df = None
@@ -81,7 +85,7 @@ def morph_to_rdf(input_dir, output_file, p_values, gene_descriptions, bait_descr
         graph = add_orthology_to_graph(graph, onto, gf_df, species)
 
     # add gene descriptions
-    if gene_descriptions is not None:
+    if gene_descriptions or go:
         logging.info("{0}     Adding gene descriptions     {0}".format(strlist[(count2 + 1) % 5]))
         graph = add_descriptions_to_graph(graph, onto, gene_description_dict)
 

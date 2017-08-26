@@ -60,7 +60,7 @@ def random_bulk_run(morph_config_file, data_sets_dir, output_file, morph_path, r
 
             # Get results
             results_dict, count = process_output(results_dict, output_dir, count)
-            os.system('rm -r {}'.format(output_dir))
+            os.system('rm -r {}*'.format(job_list_name))
 
             done += chunk_size
         logging.info("Done with {0} random runs for gene sets of size {1}".format(number_total, i))

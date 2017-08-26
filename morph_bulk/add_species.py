@@ -165,11 +165,11 @@ def write_jobs(morph_config):
     jobs_path = os.path.join(morph_config.base_path, "gene_sets", morph_config.gene_sets_type)
 
     if not os.path.isdir(os.path.join(morph_config.base_path, "gene_sets")):
-        print('\tmkdir ' + os.path.join(morph_config.base_path, "gene_sets"))
+        logging.info('Making new directory for gene sets (mkdir ' + os.path.join(morph_config.base_path, "gene_sets)"))
         os.system('mkdir ' + os.path.join(morph_config.base_path, "gene_sets"))
 
     if not os.path.isdir(jobs_path):
-        print('\tmkdir '+ jobs_path)
+        logging.info('Making new directory for gene sets (mkdir '+ jobs_path + ')')
         os.system('mkdir '+ jobs_path)
 
     gene_sets = morph_config.gene_sets

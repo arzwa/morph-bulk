@@ -38,8 +38,6 @@ def morph_chunked_run(morph_config_file, jobs_dir, output_dir, chunk_size, numbe
         morph_config = m.read()
     morph_config = yaml.load(morph_config, yaml.RoundTripLoader)
 
-
-
     # Get jobs
     jobs = os.listdir(jobs_dir)
     count = 0
@@ -63,7 +61,7 @@ def morph_chunked_run(morph_config_file, jobs_dir, output_dir, chunk_size, numbe
 
     logging.info("Started last chunk")
     job_list_name = str(uuid.uuid1())
-    make_tmp_job_list(jobs[i:], jobs_dir, morph_config, job_list_name)
+    make_tmp_job_list(jobs[end:], jobs_dir, morph_config, job_list_name)
     run_morph(morph_path, morph_config_file, job_list_name, output_dir, number_of_candidates)
 
 
