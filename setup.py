@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='morph_bulk',
+    name='morph-bulk',
     version='1.0',
     packages=['morph_bulk'],
     url='',
@@ -22,6 +22,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        morphbulk=morphbulk:cli
+        morph-bulk=morphbulk:cli
     ''',
 )

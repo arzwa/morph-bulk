@@ -8,7 +8,6 @@ import click
 import os
 import coloredlogs, logging
 import sys
-import datetime
 from morph_bulk.add_species import format_groups, write_config, check_directory, write_jobs, MorphConfig
 from morph_bulk.morph_chunked import morph_chunked_run
 from morph_bulk.random_baits import random_bulk_run
@@ -25,15 +24,15 @@ def cli(verbose):
     Welcome to the MORPH bulk run command line interface!
 
     \b
-                                 _     _           _ _
-                                | |   | |         | | |
-      _ __ ___   ___  _ __ _ __ | |__ | |__  _   _| | | __
-     | '_ ` _ \\ / _ \\| '__| '_ \\| '_ \\| '_ \\| | | | | |/ /
-     | | | | | | (_) | |  | |_) | | | | |_) | |_| | |   <
-     |_| |_| |_|\\___/|_|  | .__/|_| |_|_.__/ \\__,_|_|_|\\_\\
-                          | |
-                          |_|
-        \b
+                                _           _           _ _
+                               | |         | |         | | |
+     _ __ ___   ___  _ __ _ __ | |__ ______| |__  _   _| | | __
+    | '_ ` _ \ / _ \| '__| '_ \| '_ \______| '_ \| | | | | |/ /
+    | | | | | | (_) | |  | |_) | | | |     | |_) | |_| | |   <
+    |_| |_| |_|\___/|_|  | .__/|_| |_|     |_.__/ \__,_|_|_|\_\\
+                         | |
+                         |_|
+    \b
     """
     if verbose == 'debug':
         coloredlogs.install()
@@ -306,7 +305,7 @@ def run(morph_config_file, jobs_dir, output_dir, chunk_size, number_of_candidate
 @click.argument('output_dir', type=click.Path(exists=False))
 @click.option('--p_values','-p', type=click.Path(exists=True), default=None,
               help=('CSV file with p-value calculations from random run.'
-                    'See `morphbulk random --help` for more information.'))
+                    'See `morph-bulk random --help` for more information.'))
 @click.option('--set_descriptions','-s', default=None,
               help='Tab separated file with gene set descriptions (e.g. MapMan pathways) (default=None).')
 @click.option('--gene_descriptions','-g', default=None,
