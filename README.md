@@ -4,7 +4,7 @@ Arthur Zwaenepoel 2016 - 2017
 
 This Command line interface (CLI) bundles several command line utilities to
 perform bulk runs with MORPH v1.0.6 (C++ version), which is included in this
-repository (refer to the <a href='https://github.com/arzwa/morphbulk/wiki'>wiki
+repository (refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki
 </a> for further installation instructions). The CLI is written using click in
 Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
 
@@ -55,7 +55,7 @@ option.
     $ morph-bulk --verbose [silent|info|debug] [COMMAND]
 
 ## Usage
-Please refer to the <a href='https://github.com/arzwa/morph-bulk/wiki'>wiki</a>
+Please refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki</a>
 for detailed install instructions, data format requirements and a tutorial 
 on how to run MORPH bulk runs.
 
