@@ -2,13 +2,13 @@ Bootstrap: docker
 From: ubuntu
 
 %runscript
-morph-bulk --help 
+	morph-bulk --help 
 
 %help
-morph-bulk --help
+	morph-bulk --help
 
 %labels
-   AUTHOR arzwa@psb.vib-ugent.be
+	AUTHOR arzwa@psb.vib-ugent.be
 
 %environment
 	# click was complaining about this
@@ -18,7 +18,7 @@ morph-bulk --help
 
 %post
 	# install python, git, etc. and MORPH dependencies
-    apt-get update && apt-get -y install python3-pip git wget libgsl-dev libyaml-cpp-dev libboost-all-dev cmake build-essential
+	apt-get update && apt-get -y install python3-pip git wget libgsl-dev libyaml-cpp-dev libboost-all-dev cmake build-essential
 
 	# get morph-bulk
 	git clone https://gitlab.psb.ugent.be/arzwa/morph-bulk.git 

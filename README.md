@@ -25,6 +25,12 @@ calling the `morph-bulk` executable directly, you now have to run
 
     singularity exec morph-bulk.simg morph-bulk <command>
 
+You can test you're installation by running an analysis on the example
+directory inside the morph-bulk repository.
+
+    singularity exec morph-bulk.simg morph-bulk pipeline -r1 5 -r2 10 -nt 100 ./example/ zosma ./zosma.go.tsv ./pipeline_out/
+
+If this runs smoothly, everything is installed correctly.
 
 ## Install morph-bulk the classical way
 
