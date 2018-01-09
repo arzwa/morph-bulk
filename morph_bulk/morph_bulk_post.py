@@ -108,7 +108,7 @@ def summary(input_dir, output_dir, p_values, set_descriptions, gene_descriptions
 
     else:
         logging.warning('No significant sets found: EXIT')
-        corrected_extended = pd.DataFrame()
+        return
 
     # supplementary data tables
     if supplementary:
