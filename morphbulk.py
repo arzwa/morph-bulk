@@ -34,6 +34,15 @@ def cli(verbose):
                          |_|
     \b
 
+    If you are running morph-bulk from within a Singularity container use the following command
+    to actually get started with morph-bulk:
+
+        singularity exec morph-bulk.simg morph-bulk <command>
+
+    e.g. to display help message of the morph-bulk pipeline mode:
+
+        singularity exec morph-bulk.simg morph-bulk pipeline --help
+
     Arthur Zwaenepoel - arzwa@psb.vib-ugent.be
     """
     if verbose == 'debug':
@@ -45,25 +54,6 @@ def cli(verbose):
         coloredlogs.install()
         logging.basicConfig(format='%(asctime)s: %(levelname)s\t%(message)s', level=logging.INFO,
                             stream=sys.stdout)
-    pass
-
-
-@cli.command(context_settings={'help_option_names': ['-h', '--help']})
-def singularity():
-    """ Display help message for running within a singularity container. """
-    import textwrap
-    help_str = textwrap.fill("Hi there, it seems you're running morph-bulk from within a Singularity container. " 
-                             "To run morph-bulk, use the following syntax:", 80)
-    help_str += "\n\n\tsingularity exec morph-bulk.simg morph-bulk <command>\n\n"
-    help_str += textwrap.fill("If you would like to test you're installation, locate the example directory of the " 
-                              "morph-bulk repository (you can find it at https://gitlab.psb.ugent.be/arzwa/morph-bulk/ " 
-                              "if you don't have the morph-bulk repository locally). Then run:")
-    help_str += "\n\n\tsingularity exec morph-bulk.simg morph-bulk pipeline -r1 5 -r2 10 -nt 100 ./example zosma "
-    help_str += "./example/zosma.go.tsv ./pipeline_out/ \n\n"
-    help_str += textwrap.fill("If this works smoothly, you're good to go. Information on morph-bulk can be "
-                              "found on the wiki at https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home")
-    help_str += "\n\nArthur Zwaenepoel - arzwa@psb.vib-ugent.be"
-    print(help_str)
     pass
 
 
@@ -131,6 +121,9 @@ def pipeline(base_path, species, functional_annotation, output_directory,
     - Path to MORPH executable (tested with MORPH C++ v1.0.6)
     - Output directory
     \b
+
+    For an example, see the `example` directory of the morph-bulk repository:
+        https://gitlab.psb.ugent.be/arzwa/morph-bulk/tree/master/example
     """
     if gene_sets_name == 'default':
         if functional_annotation:
@@ -233,6 +226,9 @@ def add(base_path, species, functional_annotation, gene_sets, gene_sets_name, pl
                 ./dataset2.ppi.clustering
         ./gene_descriptions.tsv
     \b
+
+    For an example, see the `example` directory of the morph-bulk repository:
+        https://gitlab.psb.ugent.be/arzwa/morph-bulk/tree/master/example
 
     Works with Morph v1.0.6. Note that all options are really optional.
     """

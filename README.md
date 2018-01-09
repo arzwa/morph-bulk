@@ -1,12 +1,32 @@
 # MORPH bulk run command line interface
-Arthur Zwaenepoel 2016 - 2017
-(arzwa@psb.vib-ugent.be)
+Arthur Zwaenepoel 2017 (arzwa@psb.vib-ugent.be)
 
 This Command line interface (CLI) bundles several command line utilities to
 perform bulk runs with MORPH v1.0.6 (C++ version), which is included in this
 repository (refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki
 </a> for further installation instructions). The CLI is written using click in
 Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
+
+## Install morph-bulk using Singularity (recommended)
+
+Singularity uses a container concept similar to Docker. Singularity
+containers can be used to package entire scientific workflows, software
+and libraries, and even data. Install Singularity following the
+instructions here: http://singularity.lbl.gov/index.html
+
+If you have singularity installed, you can create the `morph-bulk` image
+using the following command (assuming you are inside the cloned repository):
+
+    sudo singularity build morph-bulk.simg morph-bulk.shub
+
+This will create the `morph-bulk.simg` image file. Now you can use
+`morph-bulk` like you would do normally but bear in mind that instead of
+calling the `morph-bulk` executable directly, you now have to run
+
+    singularity exec morph-bulk.simg morph-bulk <command>
+
+
+## Install morph-bulk the classical way
 
 To install `cd` to the cloned repository and run:
 
