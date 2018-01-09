@@ -18,7 +18,8 @@ setup(
         'numpy==1.13.1',
         'pandas==0.20.3',
         'ruamel.yaml==0.14.9',
-        'scipy==0.19.1'
+        'scipy==0.19.1',
+        'godb'
     ],
     entry_points='''
         [console_scripts]
