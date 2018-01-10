@@ -15,7 +15,7 @@ and libraries, and even data. Install Singularity following the
 instructions here: http://singularity.lbl.gov/index.html
 
 If you have singularity installed, you can create the `morph-bulk` image
-using the following command (assuming you are inside the cloned repository):
+using the following command (*assuming you are inside the cloned repository*):
 
     sudo singularity build morph-bulk.simg morph-bulk.shub
 
@@ -28,7 +28,7 @@ calling the `morph-bulk` executable directly, you now have to run
 You can test you're installation by running an analysis on the example
 directory inside the morph-bulk repository.
 
-    singularity exec morph-bulk.simg morph-bulk pipeline -r1 5 -r2 10 -nt 100 ./example/ zosma ./zosma.go.tsv ./pipeline_out/
+    singularity exec morph-bulk.simg morph-bulk pipeline -r1 5 -r2 10 -nt 100 ./example/ zosma ./example/zosma.go.tsv ./pipeline_out/
 
 If this runs smoothly, everything is installed correctly.
 
