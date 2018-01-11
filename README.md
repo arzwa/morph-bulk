@@ -7,9 +7,9 @@ repository (refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/w
 </a> for further installation instructions). The CLI is written using click in
 Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
 
-## Install morph-bulk using Singularity (recommended)
+## 1. Install morph-bulk using Singularity (recommended)
 
-### Install Singularity
+### 1.1 Install Singularity
 Singularity uses a container concept similar to Docker. Singularity
 containers can be used to package entire scientific workflows, software
 and libraries, and even data. Install Singularity following the
@@ -27,7 +27,7 @@ vagrant up
 vagrant ssh
 ```
 
-### Build the morph-bulk image
+### 1.2 Build the morph-bulk image
 
 From within th virtual machine, clone the repository and enter it:
 
@@ -52,7 +52,7 @@ directory inside the morph-bulk repository.
 
 If this runs smoothly, everything is installed correctly.
 
-## Install morph-bulk the classical way
+## 2. Install morph-bulk the classical way
 
 To install `cd` to the cloned repository and run:
 
@@ -100,7 +100,7 @@ option.
 
     $ morph-bulk --verbose [silent|info|debug] [COMMAND]
 
-## Usage
+## 3. Usage
 Please refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki</a>
 for detailed install instructions, data format requirements and a tutorial 
 on how to run MORPH bulk runs.
