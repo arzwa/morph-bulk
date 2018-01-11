@@ -1,4 +1,16 @@
 # MORPH bulk run command line interface
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [MORPH bulk run command line interface](#morph-bulk-run-command-line-interface)
+	- [1. Install morph-bulk using Singularity (recommended)](#1-install-morph-bulk-using-singularity-recommended)
+		- [1.1 Install Singularity](#11-install-singularity)
+		- [1.2 Build the morph-bulk image](#12-build-the-morph-bulk-image)
+	- [2. Install morph-bulk the classical way](#2-install-morph-bulk-the-classical-way)
+	- [3. Usage](#3-usage)
+
+<!-- /TOC -->
+
 Arthur Zwaenepoel 2017 (arzwa@psb.vib-ugent.be)
 
 This Command line interface (CLI) bundles several command line utilities to
@@ -13,7 +25,7 @@ Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
 Singularity uses a container concept similar to Docker. Singularity
 containers can be used to package entire scientific workflows, software
 and libraries, and even data. Install Singularity following the
-instructions here: 
+instructions here:
 
 - Linux: http://singularity.lbl.gov/install-linux
 - Mac: http://singularity.lbl.gov/install-mac
@@ -102,6 +114,5 @@ option.
 
 ## 3. Usage
 Please refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki</a>
-for detailed install instructions, data format requirements and a tutorial 
+for detailed install instructions, data format requirements and a tutorial
 on how to run MORPH bulk runs.
-
