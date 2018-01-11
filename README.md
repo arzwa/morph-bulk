@@ -9,10 +9,30 @@ Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
 
 ## Install morph-bulk using Singularity (recommended)
 
+### Install Singularity
 Singularity uses a container concept similar to Docker. Singularity
 containers can be used to package entire scientific workflows, software
 and libraries, and even data. Install Singularity following the
-instructions here: http://singularity.lbl.gov/index.html
+instructions here: 
+
+- Linux: http://singularity.lbl.gov/install-linux
+- Mac: http://singularity.lbl.gov/install-mac
+- Windows: http://singularity.lbl.gov/install-windows
+
+If you're on Mac or Windows, do not forget to actually activate the virtual machine:
+
+```
+vagrant init singularityware/singularity-2.4
+vagrant up
+vagrant ssh
+```
+
+### Build the morph-bulk image
+
+From within th virtual machine, clone the repository and enter it:
+
+    git clone https://gitlab.psb.ugent.be/arzwa/morph-bulk.git
+    cd morph-bulk
 
 If you have singularity installed, you can create the `morph-bulk` image
 using the following command (*assuming you are inside the cloned repository*):
