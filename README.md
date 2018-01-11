@@ -1,16 +1,17 @@
-# MORPH bulk run command line interface
-
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [MORPH bulk run command line interface](#morph-bulk-run-command-line-interface)
-	- [1. Install morph-bulk using Singularity (recommended)](#1-install-morph-bulk-using-singularity-recommended)
-		- [1.1 Install Singularity](#11-install-singularity)
-		- [1.2 Build the morph-bulk image](#12-build-the-morph-bulk-image)
-	- [2. Install morph-bulk the classical way](#2-install-morph-bulk-the-classical-way)
-	- [3. Usage](#3-usage)
+- [MORPH bulk](#morph-bulk)
+	- [1. MORPH bulk run command line interface](#1-morph-bulk-run-command-line-interface)
+	- [2. Install morph-bulk using Singularity (recommended)](#2-install-morph-bulk-using-singularity-recommended)
+		- [2.1 Install Singularity](#21-install-singularity)
+		- [2.2 Build the morph-bulk image](#22-build-the-morph-bulk-image)
+	- [3. Install morph-bulk the classical way](#3-install-morph-bulk-the-classical-way)
+	- [4. Usage](#4-usage)
 
 <!-- /TOC -->
+# MORPH bulk
 
+## 1. MORPH bulk run command line interface
 Arthur Zwaenepoel 2017 (arzwa@psb.vib-ugent.be)
 
 This Command line interface (CLI) bundles several command line utilities to
@@ -19,9 +20,9 @@ repository (refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/w
 </a> for further installation instructions). The CLI is written using click in
 Python3.5 and runs on GNU/Linux based systems (tested on Ubuntu 16.04).
 
-## 1. Install morph-bulk using Singularity (recommended)
+## 2. Install morph-bulk using Singularity (recommended)
 
-### 1.1 Install Singularity
+### 2.1 Install Singularity
 Singularity uses a container concept similar to Docker. Singularity
 containers can be used to package entire scientific workflows, software
 and libraries, and even data. Install Singularity following the
@@ -39,7 +40,7 @@ vagrant up
 vagrant ssh
 ```
 
-### 1.2 Build the morph-bulk image
+### 2.2 Build the morph-bulk image
 
 From within th virtual machine, clone the repository and enter it:
 
@@ -64,7 +65,7 @@ directory inside the morph-bulk repository.
 
 If this runs smoothly, everything is installed correctly.
 
-## 2. Install morph-bulk the classical way
+## 3. Install morph-bulk the classical way
 
 To install `cd` to the cloned repository and run:
 
@@ -112,7 +113,7 @@ option.
 
     $ morph-bulk --verbose [silent|info|debug] [COMMAND]
 
-## 3. Usage
+## 4. Usage
 Please refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki</a>
 for detailed install instructions, data format requirements and a tutorial
 on how to run MORPH bulk runs.
