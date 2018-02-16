@@ -1,3 +1,0 @@
-/home/arthur/tools/morph-v1.0.6/build/release/CMakeFiles/edit_cache.dir
-/home/arthur/tools/morph-v1.0.6/build/release/CMakeFiles/rebuild_cache.dir
-/home/arthur/tools/morph-v1.0.6/build/release/CMakeFiles/morph.dir

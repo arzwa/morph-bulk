@@ -19,10 +19,10 @@ aptitude using platforms) you can easily install these:
 Normally the following commands should suffice:
 
 	cd build/release
-    ./cmake_
+	./cmake_
 	make
 
-Than run the `morph` executable and you should get
+Then run the `morph` executable and you should get
 the following response:
 
 --------------------------------------------------------------------------------------------------------------------

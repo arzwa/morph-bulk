@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-
-make
-rm massif.out*
-. ../command.sh
-valgrind --tool=massif --massif-out-file=massif.out ${command[@]}
-massif-visualizer massif.out &
-ms_print massif.out | less
