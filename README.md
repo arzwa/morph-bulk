@@ -1,4 +1,4 @@
-https://zenodo.org/badge/DOI/10.5281/zenodo.1181740.svg
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1181740.svg)](https://doi.org/10.5281/zenodo.1181740)
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
