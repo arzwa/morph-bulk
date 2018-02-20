@@ -1,3 +1,5 @@
+https://zenodo.org/badge/DOI/10.5281/zenodo.1181740.svg
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [MORPH bulk](#morph-bulk)
