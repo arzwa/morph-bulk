@@ -116,6 +116,6 @@ option.
     $ morph-bulk --verbose [silent|info|debug] [COMMAND]
 
 ## 4. Usage
-Please refer to the <a href='https://gitlab.psb.ugent.be/arzwa/morph-bulk/wikis/home'>wiki</a>
+Please refer to the <a href='https://github.com/arzwa/morph-bulk/wiki'>wiki</a>
 for detailed install instructions, data format requirements and a tutorial
 on how to run MORPH bulk runs.
