@@ -119,3 +119,13 @@ option.
 Please refer to the <a href='https://github.com/arzwa/morph-bulk/wiki'>wiki</a>
 for detailed install instructions, data format requirements and a tutorial
 on how to run MORPH bulk runs.
+
+If you use MORPH-bulk or MorphDB, please cite us: 
+
+```
+Zwaenepoel, A., Diels, T., Amar, D., Van Parys, T., Shamir, R., Van de Peer, Y., & Tzfadia, O. (2018). 
+MorphDB: Prioritizing Genes for Specialized Metabolism Pathways and Gene Ontology Categories in Plants. 
+Frontiers in Plant Science, 9(March), 1–13. https://doi.org/10.3389/fpls.2018.00352
+```
+
+
