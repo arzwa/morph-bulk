@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu
+From: ubuntu:16.04
 
 %runscript
 	morph-bulk --help 
