@@ -29,7 +29,7 @@ From: ubuntu:16.04
 	make
 
 	# install morph-bulk
-	pip3 install pandas
+	pip3 install pandas==0.20.3
 	pip3 install joblib
 	cd ../../../
 	pip3 install .
